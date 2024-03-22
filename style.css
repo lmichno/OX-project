@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Exo 2', sans-serif;
+    user-select: none;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f1f1f1;
+}
+
+.choose-player {
+    text-align: center;
+    padding: 2px 5px;
+    background-color: lightgrey;
+    border-radius: 5px;
+    transition: all 0.1s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+        background-color: grey;
+        border-radius: 6px;
+        color: white;
+    }
+}
+
+.field {
+    width: 100px;
+    width: 100px;
+    border-radius: 0px;
+    background-color: rgb(231, 231, 231);
+    transition: all 0.1s ease-in-out;
+
+    &:hover {
+        background-color: rgb(221, 221, 221);
+    }
+}
+
+#game {
+    display: flex;
+    flex-wrap: wrap;
+    width: 300px;
+    height: 300px;
+    margin-top: 50px;
+}
