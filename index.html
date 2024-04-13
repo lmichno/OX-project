@@ -10,8 +10,8 @@
 
 <body>
     <div id="info">
-        <h2>Wybierz gracza: <span id="playerX" class="choose-player">X</span> <span id="playerO"
-                class="choose-player">O</span>
+        <h2>Wybierz gracza: <span id="playerX" class="choose-player" onclick="choose('X')">X</span> <span id="playerO"
+                class="choose-player" onclick="choose('O')">O</span>
         </h2>
     </div>
 
@@ -33,6 +33,14 @@
     </div>
 
     <script>
+        let url = 'http://localhost/OX-project';
+        fetch('http://localhost/players')
+            .then(response => response.json())
+            .then(data => console.log(data))
+
+        function choose(player) {
+
+        }
 
     </script>
 </body>
