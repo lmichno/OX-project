@@ -46,9 +46,73 @@
         //     // });
         // }
 
+        let playerName = '';
+        let playerChoice = '';
+        let move = null;
+        let moveInfo = '';
+
         function choose(player) {
             postData('http://localhost/OX-project/server.php', { player: player })
-                .then(data => console.log(data))
+                .then((data) => {
+                    console.log(data);
+                    if (data.player == player) {
+                        playerName = 'player';
+                        playerChoice = player;
+                    }
+                    else {
+                        playerName = 'nextPlayer';
+                        playerChoice = data.player;
+                    }
+                })
+        }
+
+        let interval = setInterval(() => {
+            postData('http://localhost/OX-project/server.php', { update: true })
+                .then((data) => {
+                    console.log(data);
+                    if (playerName != '' && data.player != null && data.player != false) {
+                        if (data.move == playerChoice) {
+                            move = true
+                            moveInfo = 'Twój ruch';
+                            cursor('pointer');
+                        }
+                        else {
+                            move = false;
+                            moveInfo = 'Ruch przeciwnika';
+                            cursor('not-allowed');
+                        }
+                        document.getElementById('info').innerHTML = '<h2>Gracz: ' + playerChoice + '</h2><br><h3>' + moveInfo + '</h3>';
+                    }
+                    else if (data.player == null || data.player == false) {
+                        playerName = '';
+                        playerChoice = '';
+                        document.getElementById('info').innerHTML = `<h2>Wybierz gracza: <span id="playerX" class="choose-player" onclick="choose('X')">X</span> <span id="playerO"
+                class="choose-player" onclick="choose('O')">O</span>
+        </h2>`
+                    }
+                    else if (playerName == '') {
+                        playerName = 'nextPlayer';
+                        playerChoice = data.nextPlayer;
+                        if (data.move == playerChoice) {
+                            move = true;
+                            moveInfo = 'Twój ruch';
+                            cursor('pointer');
+                        }
+                        else {
+                            move = false;
+                            moveInfo = 'Ruch przeciwnika';
+                            cursor('not-allowed');
+                        }
+                        document.getElementById('info').innerHTML = '<h2>Gracz: ' + playerChoice + '</h2><br><h3>' + moveInfo + '</h3>';
+
+                    }
+                })
+        }, 500);
+
+        function cursor(value) {
+            Array.from(document.getElementsByClassName('field')).forEach(element => {
+                element.style.cursor = value;
+            });
         }
 
         async function postData(url, data) {
@@ -64,6 +128,10 @@
         }
 
 
+        postData('http://localhost/OX-project/server.php', { reset: true })
+            .then((data) => {
+                console.log(data);
+            })
     </script>
 </body>
 
