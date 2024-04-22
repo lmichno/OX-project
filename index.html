@@ -16,40 +16,34 @@
     </div>
 
     <div id="game">
-        <div class="field" id="1"
-            style="border-right: 1px solid black; border-bottom: 1px solid black; border-top-left-radius: 10px;"></div>
-        <div class="field" id="2"
-            style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;"></div>
-        <div class="field" id="3"
-            style="border-left: 1px solid black; border-bottom: 1px solid black; border-top-right-radius: 10px;"></div>
-        <div class="field" id="4" style="border: 1px solid black; border-left: 0;"></div>
-        <div class="field" id="5" style="border: 1px solid black;"></div>
-        <div class="field" id="6" style="border: 1px solid black; border-right: 0;"></div>
-        <div class="field" id="7"
-            style="border-top: 1px solid black; border-right: 1px solid black; border-bottom-left-radius: 10px;"></div>
-        <div class="field" id="8" style="border: 1px solid black; border-bottom: 0;"></div>
-        <div class="field" id="9"
-            style="border-top: 1px solid black; border-left: 1px solid black; border-bottom-right-radius: 10px;"></div>
+        <div class="field" id="11"
+            style="border-right: 1px solid black; border-bottom: 1px solid black; border-top-left-radius: 10px;"
+            onclick="newMove('11')"></div>
+        <div class="field" id="12"
+            style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;"
+            onclick="newMove('12')"></div>
+        <div class="field" id="13"
+            style="border-left: 1px solid black; border-bottom: 1px solid black; border-top-right-radius: 10px;"
+            onclick="newMove('13')"></div>
+        <div class="field" id="21" style="border: 1px solid black; border-left: 0;" onclick="newMove('21')"></div>
+        <div class="field" id="22" style="border: 1px solid black;" onclick="newMove('22')"></div>
+        <div class="field" id="23" style="border: 1px solid black; border-right: 0;" onclick="newMove('23')"></div>
+        <div class="field" id="31"
+            style="border-top: 1px solid black; border-right: 1px solid black; border-bottom-left-radius: 10px;"
+            onclick="newMove('31')"></div>
+        <div class="field" id="32" style="border: 1px solid black; border-bottom: 0;" onclick="newMove('32')"></div>
+        <div class="field" id="33"
+            style="border-top: 1px solid black; border-left: 1px solid black; border-bottom-right-radius: 10px;"
+            onclick="newMove('33')"></div>
     </div>
 
     <script>
-        //let url = 'http://localhost/OX-project';
-        // function choose(player) {
-        //     let d = fetch('server.php?player=' + player + '').then((response) => {
-        //         console.log(response);
-        //         return response;
-        //     }).then((data) => {
-        //         console.log(data);
-        //     });
-        //     // postData("server.php", { player: 'X' }).then((data) => {
-        //     //     console.log(data);
-        //     // });
-        // }
 
         let playerName = '';
         let playerChoice = '';
-        let move = null;
+        let move = false;
         let moveInfo = '';
+        let field = [[null, null, null], [null, null, null], [null, null, null]];
 
         function choose(player) {
             postData('http://localhost/OX-project/server.php', { player: player })
@@ -104,7 +98,28 @@
                             cursor('not-allowed');
                         }
                         document.getElementById('info').innerHTML = '<h2>Gracz: ' + playerChoice + '</h2><br><h3>' + moveInfo + '</h3>';
+                    }
+                    field = data.field;
+                    for (let i = 0; i < 3; i++) {
+                        for (let j = 0; j < 3; j++) {
+                            if (field[i][j] == null) {
+                                field[i][j] = '';
+                            }
+                            document.getElementById('' + (i + 1) + '' + (j + 1) + '').innerHTML = field[i][j];
 
+                        }
+                    }
+                    if (data.winner != null) {
+                        if (data.winner == playerChoice) {
+                            document.getElementById('info').innerHTML = '<h2>Wygrałeś!</h2><br><span id="playerX" class="choose-player" onclick="window.location.reload();">Od nowa</span>';
+                        }
+                        else if (data.winner == 'draw') {
+                            document.getElementById('info').innerHTML = '<h2>Remis!</h2><br><span id="playerX" class="choose-player" onclick="window.location.reload();">Od nowa</span>';
+                        }
+                        else {
+                            document.getElementById('info').innerHTML = '<h2>Przegrałeś!</h2><br><span id="playerX" class="choose-player" onclick="window.location.reload();">Od nowa</span>';
+                        }
+                        move = false;
                     }
                 })
         }, 500);
@@ -113,6 +128,14 @@
             Array.from(document.getElementsByClassName('field')).forEach(element => {
                 element.style.cursor = value;
             });
+        }
+
+        async function newMove(id) {
+            if (move) {
+                postData('http://localhost/OX-project/server.php', { field: id, playerChoice: playerChoice }).then((data) => {
+                    console.log(data);
+                })
+            }
         }
 
         async function postData(url, data) {
